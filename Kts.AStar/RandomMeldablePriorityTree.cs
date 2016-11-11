@@ -65,16 +65,8 @@ namespace Kts.AStar
 		/// <summary>
 		/// Merge two heaps into one.
 		/// </summary>
-		public static RandomMeldablePriorityTree<T> Meld(RandomMeldablePriorityTree<T> q1, RandomMeldablePriorityTree<T> q2)
-		{
-			return Meld(q1, q2, x => ThreadLocalXorShifter.NextRandom(q1._children.Length));
-		}
-
-		/// <summary>
-		/// Merge two heaps into one.
-		/// </summary>
 		public static RandomMeldablePriorityTree<T> Meld(RandomMeldablePriorityTree<T> q1, RandomMeldablePriorityTree<T> q2,
-			Func<int, byte> getChildIndex)
+			Func<int, byte> getChildIndex = null)
 		{
 			// think this through:
 			// we will return either q1 or q2 (and if either is null, return is obvious)
@@ -111,7 +103,7 @@ namespace Kts.AStar
 			do
 			{
 				// pick a random child branch
-				var childIdx = getChildIndex.Invoke(q1._children.Length);
+				var childIdx = getChildIndex == null ? ThreadLocalXorShifter.NextRandom(q1._children.Length) : getChildIndex.Invoke(q1._children.Length);
 
 				// at this point q2 is larger than or equal to q1
 				if (q1._children[childIdx] == null)
