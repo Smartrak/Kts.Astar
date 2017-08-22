@@ -76,11 +76,11 @@ namespace Kts.AStar
 			
 			var findMinimalPathAsync = await Task.Run(() =>
 				{
-					bool successo;
-					double distanceo;
+					bool success;
+					double distance;
 					var path = FindMinimalPath(startingPosition, endingPosition,
-						getNeighbors, getScoreBetween, getHeuristicScore, out distanceo, out successo, token);
-					return new SearchResult<TPosition>(successo, distanceo, path);
+						getNeighbors, getScoreBetween, getHeuristicScore, out distance, out success, token);
+					return new SearchResult<TPosition>(success, distance, path);
 				}, token);
 			return findMinimalPathAsync;
 		}
