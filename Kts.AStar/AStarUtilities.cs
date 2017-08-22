@@ -33,7 +33,7 @@ namespace Kts.AStar
 			}
 		}
 
-			/// <summary>
+		/// <summary>
 		/// Returns the best path. Async method call.
 		/// TPosition will be used as a dictionary key.
 		/// </summary>
@@ -53,6 +53,36 @@ namespace Kts.AStar
 			double distance; bool success;
 			return await Task.Run(() => FindMinimalPath(startingPosition, endingPosition, 
 				getNeighbors, getScoreBetween, getHeuristicScore, out distance, out success, token), token);
+		}
+
+		/// <summary>
+		/// Returns the best path. Async method call.
+		/// TPosition will be used as a dictionary key.
+		/// Result includes success and distance found during execution
+		/// </summary>
+		/// <param name="startingPosition"></param>
+		/// <param name="endingPosition"></param>
+		/// <param name="getNeighbors">Given a position, return all the neighbors directly accessible from that position.</param>
+		/// <param name="getScoreBetween">Given two (adjacent) positions/nodes, return the score/distance between them.</param>
+		/// <param name="getHeuristicScore">Given a position/node, return the (admissibly) estimated distance/score for that point to the endingPosition.</param>
+		public static async Task<SearchResult<TPosition>> FindMinimalPathAsync<TPosition>(
+			TPosition startingPosition,
+			TPosition endingPosition,
+			Func<TPosition, IEnumerable<TPosition>> getNeighbors,
+			Func<TPosition, TPosition, double> getScoreBetween,
+			Func<TPosition, double> getHeuristicScore,
+			CancellationToken token = new CancellationToken())
+		{
+			
+			var findMinimalPathAsync = await Task.Run(() =>
+				{
+					bool successo;
+					double distanceo;
+					var path = FindMinimalPath(startingPosition, endingPosition,
+						getNeighbors, getScoreBetween, getHeuristicScore, out distanceo, out successo, token);
+					return new SearchResult<TPosition>(successo, distanceo, path);
+				}, token);
+			return findMinimalPathAsync;
 		}
 
 		/// <summary>
